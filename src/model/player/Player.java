@@ -15,6 +15,14 @@ public class Player {
 	 * The list of differents boats of a player
 	 */
 	private Boat boat;
+	
+	/**
+	 * Build a player
+	 * @param money {@link Integer}
+	 */
+	public Player(Integer money){
+		this.money = money;
+	}
 
 	/**
 	 * Accessor for money

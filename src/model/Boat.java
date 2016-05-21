@@ -1,5 +1,7 @@
 package model;
 
 public class Boat {
-	Integer durability;
+	private Integer durability;
+	private Guns[] gun;
+	
 }

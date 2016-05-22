@@ -1,4 +1,4 @@
-package view;
+package model.examples.ddd;
 
 import env3d.advanced.EnvAdvanced;
 import env3d.advanced.EnvSkyRoom;

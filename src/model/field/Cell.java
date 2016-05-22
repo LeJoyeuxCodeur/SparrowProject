@@ -3,10 +3,10 @@ package model.field;
 /**
  * This class represents a cellule of an area
  */
-public class Cellule {
+public class Cell {
 	private FieldType fieldType;
 	
-	public Cellule(FieldType fieldType){
+	public Cell(FieldType fieldType){
 		this.fieldType = fieldType;
 	}
 

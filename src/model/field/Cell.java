@@ -14,8 +14,6 @@ public class Cell extends Observable{
 
 	public void setFieldType(FieldType fieldType) {
 		this.fieldType = fieldType;
-		setChanged();
-		notifyObservers(this);
 	}
 	
 	public String toString(){

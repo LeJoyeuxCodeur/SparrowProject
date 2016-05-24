@@ -67,10 +67,10 @@ public class Area extends Observable implements Observer{
 	
 	public void setArea(File areaFile){
 		this.areaFile = areaFile;
-		final Integer width = Integer.parseInt(PROPERTIES.getProperty("cellWidth"));
-		final Integer height = Integer.parseInt(PROPERTIES.getProperty("cellHeight"));
+		final Integer cellNumberOnWidth = Integer.parseInt(PROPERTIES.getProperty("cellNumberOnWidth"));
+		final Integer cellNumberOnHeight = Integer.parseInt(PROPERTIES.getProperty("cellNumberOnHeight"));
 		
-		cells = new Cell[width][height];
+		cells = new Cell[cellNumberOnWidth][cellNumberOnHeight];
 		initArea();
 	}
 

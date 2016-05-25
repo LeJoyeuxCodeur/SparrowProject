@@ -25,14 +25,19 @@ public class FullMap extends Observable implements Observer{
 		Integer height = Integer.parseInt(PROPERTIES.getProperty("fieldHeight"));
 
 		fullMap = new Area[width][height];
-		fullMap[0][0] = new Area();
-		fullMap[0][0].addObserver(this);
-		fullMap[0][0].setArea(new File("data/maps/mapTest.txt"));
+		
+		for(int i = 0; i < fullMap.length; i++){
+			for(int j = 0; j < fullMap[0].length; j++){
+				fullMap[i][j] = new Area();
+				fullMap[i][j].addObserver(this);
+				fullMap[i][j].setArea(new File("data/maps/mapTest.txt"));				
+			}
+		}
 		
 		setChanged();
 		notifyObservers("MAP_CHARGED");
 		
-		LOGGER.info("model initialized");
+		LOGGER.info("model initialized --> Number of areas : " + fullMap.length * fullMap[0].length);
 	}
 
 	/**

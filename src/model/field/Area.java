@@ -24,11 +24,11 @@ public class Area extends Observable implements Observer{
 		String area = "";
 		try {
 			area = IOUtils.toString(new FileInputStream(areaFile), "UTF-8").replaceAll(" ", "");
-			LOGGER.info("Map test loaded");
+			LOGGER.info("Map loaded");
 		
 			initAreaWithValues(area);
 		} catch (IOException e) {
-			LOGGER.error("Map test not loaded -- " + e.getMessage());
+			LOGGER.error("Map not loaded -- " + e.getMessage());
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class Area extends Observable implements Observer{
 				counter++;
 			}
 		}
-		LOGGER.info("Area test initialized");
+		LOGGER.info("Area initialized");
 	}
 
 	private FieldType convertCharacterToCelluleType(Character type){

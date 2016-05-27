@@ -1,25 +1,27 @@
 package model.thread;
 
-import static model.log.ProjectLogger.LOGGER;
-
 import java.awt.Dimension;
 import java.util.Observable;
 
+import org.apache.log4j.Logger;
+
+import model.log.ProjectLogger;
 import view.MainFrame;
 
 public class MouseRunnable extends Observable implements Runnable{
 	private Dimension dim;
 	private int mouseDetectionOffset;
+	private Logger logger = new ProjectLogger(this.getClass()).getLogger();
 	
 	public MouseRunnable(Dimension dim, int mouseDetectionOffset){
 		this.dim = dim;
 		this.mouseDetectionOffset = mouseDetectionOffset;
 		
-		LOGGER.info("Mouse thread initialized");
+		logger.info("Mouse thread initialized");
 	}
 	
 	public void run(){
-		LOGGER.info("Mouse thread started");
+		logger.info("Mouse thread started");
 		while(true){
 			if(MainFrame.lastXFound != -1 && MainFrame.lastYFound != -1){
 				// LEFT DOWN

@@ -1,7 +1,5 @@
 package view;
 
-import static model.log.ProjectLogger.LOGGER;
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -17,11 +15,14 @@ import java.util.Observer;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import org.apache.log4j.Logger;
+
 import model.configuration.GameProperties;
 import model.field.Area;
 import model.field.Cell;
 import model.field.FieldType;
 import model.field.FullMap;
+import model.log.ProjectLogger;
 import model.thread.MouseRunnable;
 import view.listener.FrameMouseListener;
 
@@ -38,6 +39,7 @@ public class MainFrame extends JFrame implements Observer{
 	private int BUFFERED_IMAGE_WIDTH;
 	private int BUFFERED_IMAGE_HEIGHT;
 	private BufferedImage offScreen;
+	private Logger logger = new ProjectLogger(this.getClass()).getLogger();
 	
 	public MainFrame(FullMap model){
 		this.model = model;
@@ -48,10 +50,10 @@ public class MainFrame extends JFrame implements Observer{
 		int heightTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("heightTexture"));
 		
 		try{
-			earthTexture = ImageIO.read(new File("data/textures/EARTH.png")).getScaledInstance(widthTexture, heightTexture, Image.SCALE_DEFAULT);
+			earthTexture = ImageIO.read(new File("data/textures/ILE.png")).getScaledInstance(widthTexture, heightTexture, Image.SCALE_DEFAULT);
 			seaTexture = ImageIO.read(new File("data/textures/SEA.png")).getScaledInstance(widthTexture, heightTexture, Image.SCALE_DEFAULT);
 		} catch (IOException e) {
-			LOGGER.error("Error while loading textures");
+			logger.error("Error while loading textures");
 		}
 		
 		
@@ -59,7 +61,7 @@ public class MainFrame extends JFrame implements Observer{
 		initThreads();
 		addListeners();
 
-		LOGGER.info("View initialized");
+		logger.info("View initialized");
 	}
 
 	private void initThreads() {
@@ -188,7 +190,7 @@ public class MainFrame extends JFrame implements Observer{
 								+ (i * tile_height_mult_area_offset) - (j * tile_height_mult_area_offset) 
 								+ offset_Y;
 
-						if(area[k][l].getFieldType() == FieldType.EARTH){
+						if(area[k][l].getFieldType() == FieldType.ILE){
 							offgc.drawImage(earthTexture, x, y, null);
 						}
 						else if(area[k][l].getFieldType() == FieldType.SEA){

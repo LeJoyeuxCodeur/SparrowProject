@@ -1,5 +1,7 @@
 package model.field;
 
+import static model.configuration.GameProperties.PROPERTIES;
+
 import java.util.Observable;
 
 /**
@@ -7,6 +9,8 @@ import java.util.Observable;
  */
 public class Cell extends Observable{
 	private FieldType fieldType;
+	private String ileType = PROPERTIES.getProperty("ileType");
+	private String seaType = PROPERTIES.getProperty("ileType");
 	
 	public FieldType getFieldType() {
 		return fieldType;
@@ -17,8 +21,8 @@ public class Cell extends Observable{
 	}
 	
 	public String toString(){
-		if(fieldType == FieldType.EARTH)
-			return "X  ";
-		return ".  "; // FieldType.SEA
+		if(fieldType == FieldType.ILE)
+			return ileType + "  ";
+		return seaType + "  ";
 	}
 }

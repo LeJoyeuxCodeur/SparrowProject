@@ -1,14 +1,14 @@
 package model.configuration;
 
-import model.log.ProjectLogger;
+import org.apache.log4j.BasicConfigurator;
 
 /**
  * This class loads the default configuration for the program
  */
 public class Configuration {
 	public static void setDefaultConfiguration(){
-		// Initialize the logger
-		new ProjectLogger();
+		// Configure the logger
+		BasicConfigurator.configure();
 		
 		// Initialize properties
 		new GameProperties();

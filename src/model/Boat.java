@@ -1,9 +1,12 @@
 package model;
 
-public class Boat {
+import java.util.Observable;
+
+public class Boat extends Observable {
 	private Integer maxDurability;
 	private Integer durability;
-	private CargoHold;
+
+	/*private CargoHold;
 	private Guns[] guns;
 	private Mats[] mats;
 	private Sailors[] sailors;
@@ -37,6 +40,6 @@ public class Boat {
 	//restore the durability
 	public void restoringHull(){
 		this.durability = this.maxDurability;
-	}
+	} */
 	
 }

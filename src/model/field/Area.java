@@ -62,6 +62,7 @@ public class Area extends Observable implements Observer{
 				counter++;
 			}
 		}
+		
 		logger.info("Area initialized");
 	}
 

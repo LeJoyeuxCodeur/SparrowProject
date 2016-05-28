@@ -9,8 +9,12 @@ import java.util.Observable;
  */
 public class Cell extends Observable{
 	private FieldType fieldType;
+	private int pixelX;
+	private int pixelY;
+	
+	
 	private String ileType = PROPERTIES.getProperty("ileType");
-	private String seaType = PROPERTIES.getProperty("ileType");
+	private String seaType = PROPERTIES.getProperty("seaType");
 	
 	public FieldType getFieldType() {
 		return fieldType;
@@ -24,5 +28,21 @@ public class Cell extends Observable{
 		if(fieldType == FieldType.ILE)
 			return ileType + "  ";
 		return seaType + "  ";
+	}
+
+	public int getPixelX() {
+		return pixelX;
+	}
+
+	public void setPixelX(int pixelX) {
+		this.pixelX = pixelX;
+	}
+
+	public int getPixelY() {
+		return pixelY;
+	}
+
+	public void setPixelY(int pixelY) {
+		this.pixelY = pixelY;
 	}
 }

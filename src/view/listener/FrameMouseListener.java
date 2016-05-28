@@ -7,10 +7,10 @@ import java.awt.event.MouseMotionListener;
 import view.MainFrame;
 
 public class FrameMouseListener implements MouseListener, MouseMotionListener{
-	private Thread mouseThread;
+	private MainFrame frame;
 	
-	public FrameMouseListener(Thread mouseThread) {
-		this.mouseThread = mouseThread;
+	public FrameMouseListener(MainFrame frame) {
+		this.frame = frame;
 	}
 	
 	
@@ -22,23 +22,26 @@ public class FrameMouseListener implements MouseListener, MouseMotionListener{
 		MainFrame.lastXFound = arg0.getX();
 		MainFrame.lastYFound = arg0.getY();
 		
-		mouseThread.resume();
+		frame.getMouseThread().resume();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		frame.setXCliqued(arg0.getX() + frame.getPosX());
+		frame.setYCliqued(arg0.getY() + frame.getPosY());
+		MainFrame.tileCliqued = true;
 		
+		frame.getMouseThread().resume();
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		mouseThread.resume();
+		frame.getMouseThread().resume();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		mouseThread.suspend();
+		frame.getMouseThread().suspend();
 	}
 
 	@Override

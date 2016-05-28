@@ -2,23 +2,23 @@ package controller;
 
 import org.apache.log4j.Logger;
 
-import model.field.FullMap;
+import model.ModelObjects;
 import model.log.ProjectLogger;
 import view.MainFrame;
 
 public class Controller {
-	private FullMap model;
+	private ModelObjects modelObjects;
 	private MainFrame view;
 	private Logger logger = new ProjectLogger(this.getClass()).getLogger();
 	
 	public Controller(){
 		// Model
-		model = new FullMap();
+		modelObjects = new ModelObjects();
 		
 		// View
-		view = new MainFrame(model);
+		view = new MainFrame(modelObjects);
 		
-		model.initMap();
+		modelObjects.getFullMap().initMap();
 		
 		logger.info("controller initialized");
 	}

@@ -17,7 +17,7 @@ public class FullMap extends Observable implements Observer{
 	/**
 	 * The map of the game
 	 */
-	private Area[][] fullMap;
+	private Area[][] areas;
 	private Logger logger = new ProjectLogger(this.getClass()).getLogger();
 	
 	
@@ -28,30 +28,30 @@ public class FullMap extends Observable implements Observer{
 		Integer width = Integer.parseInt(PROPERTIES.getProperty("fieldWidth"));
 		Integer height = Integer.parseInt(PROPERTIES.getProperty("fieldHeight"));
 
-		fullMap = new Area[width][height];
+		areas = new Area[width][height];
 		
 		File mapTestPath = new File(PROPERTIES.getProperty("mapTestPath"));
 		
-		for(int i = 0; i < fullMap.length; i++){
-			for(int j = 0; j < fullMap[0].length; j++){
-				fullMap[i][j] = new Area();
-				fullMap[i][j].addObserver(this);
-				fullMap[i][j].setArea(mapTestPath);				
+		for(int i = 0; i < areas.length; i++){
+			for(int j = 0; j < areas[0].length; j++){
+				areas[i][j] = new Area();
+				areas[i][j].addObserver(this);
+				areas[i][j].setArea(mapTestPath);				
 			}
 		}
 		
 		setChanged();
 		notifyObservers("MAP_CHARGED");
-				
-		logger.info("model initialized --> Number of areas : " + fullMap.length * fullMap[0].length);
+		
+		logger.info("model initialized --> Number of areas : " + areas.length * areas[0].length);
 	}
 
 	/**
 	 * Accessor for the map
 	 * @return {@link Area [][]}
 	 */
-	public Area[][] getFullMap() {
-		return fullMap;
+	public Area[][] getAreas() {
+		return areas;
 	}
 
 
@@ -59,8 +59,8 @@ public class FullMap extends Observable implements Observer{
 	 * Mutator for the map
 	 * param fullMap {@link Area [][]}
 	 */
-	public void setFullMap(Area[][] fullMap) {
-		this.fullMap = fullMap;
+	public void setAreas(Area[][] fullMap) {
+		this.areas = fullMap;
 	}
 	
 	@Override

@@ -13,22 +13,22 @@ public class FrameMouseListener implements MouseListener, MouseMotionListener{
 		this.frame = frame;
 	}
 	
-	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {}
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
+		
 		MainFrame.lastXFound = arg0.getX();
 		MainFrame.lastYFound = arg0.getY();
 		
-		frame.getMouseThread().resume();
+		frame.getMouseMotionThread().resume();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		frame.setXCliqued(arg0.getX() + frame.getPosX());
-		frame.setYCliqued(arg0.getY() + frame.getPosY());
+		frame.setBoatXCliqued(arg0.getX() + frame.getPosX());
+		frame.setBoatYCliqued(arg0.getY() + frame.getPosY());
 		MainFrame.tileCliqued = true;
 		
 		frame.getMouseThread().resume();
@@ -36,12 +36,12 @@ public class FrameMouseListener implements MouseListener, MouseMotionListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		frame.getMouseThread().resume();
+		frame.getMouseMotionThread().resume();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		frame.getMouseThread().suspend();
+		frame.getMouseMotionThread().suspend();
 	}
 
 	@Override

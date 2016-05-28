@@ -23,6 +23,7 @@ import model.field.Area;
 import model.field.Cell;
 import model.field.FieldType;
 import model.log.ProjectLogger;
+import model.thread.MouseMotionRunnable;
 import model.thread.MouseRunnable;
 import view.listener.FrameMouseListener;
 
@@ -32,9 +33,9 @@ public class MainFrame extends JFrame implements Observer{
 	private Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 	private Image seaTexture, earthTexture, boat;
 	private Image sub, image;
-	private int boatX, boatY;
 	private Graphics imageGraphics;
 	private Graphics2D g2;
+	private Cell destination;
 	
 	/**
 	 * Pos x in the map (begin point of the screen)
@@ -56,8 +57,10 @@ public class MainFrame extends JFrame implements Observer{
 	 */
 	public static int lastYFound;
 	private int mouseDetectionOffset = 120;
-	private MouseRunnable mouseRunnable = new MouseRunnable(dim, mouseDetectionOffset);
+	private MouseRunnable mouseRunnable = new MouseRunnable();
+	private MouseMotionRunnable mouseMotionRunnable = new MouseMotionRunnable(dim, mouseDetectionOffset);
 	private Thread mouseThread = new Thread(mouseRunnable);
+	private Thread mouseMotionThread = new Thread(mouseMotionRunnable);
 	private int BUFFERED_IMAGE_WIDTH;
 	private int BUFFERED_IMAGE_HEIGHT;
 	private BufferedImage offScreen;
@@ -65,11 +68,11 @@ public class MainFrame extends JFrame implements Observer{
 	/**
 	 * Position in x when we click
 	 */
-	private int XCliqued = 0;
+	private int boatXCliqued = 0;
 	/**
 	 * Position in y when we click
 	 */
-	private int YCliqued = 1470;
+	private int boatYCliqued = 1470;
 	public static boolean tileCliqued = false;
 	
 	public MainFrame(ModelObjects modelObjects){
@@ -79,6 +82,7 @@ public class MainFrame extends JFrame implements Observer{
 		this.modelObjects.getBoat().addObserver(modelObjects);
 		
 		mouseRunnable.addObserver(this);
+		mouseMotionRunnable.addObserver(this);
 		
 		try{
 			earthTexture = ImageIO.read(new File("data/textures/ILE.png"));
@@ -98,6 +102,7 @@ public class MainFrame extends JFrame implements Observer{
 
 	private void initThreads() {
 		mouseThread.start();
+		mouseMotionThread.start();
 	}
 
 	private void addListeners() {
@@ -172,6 +177,9 @@ public class MainFrame extends JFrame implements Observer{
 				posX = 0;
 		}
 		
+		else if(arg.equals("TILE_CLIQUED"))
+			destination = getBoatCoordinates();
+		
 		else if(arg.equals("REPAINT"))
 			repaint();
 	}
@@ -188,17 +196,22 @@ public class MainFrame extends JFrame implements Observer{
 			imageGraphics.drawImage(sub, 0, 0, null);
 			
 			
-			boatX = XCliqued;
-			boatY = YCliqued;
-			
-			if(posX <= boatX && boatX <= posX + dim.getWidth() && posY <= boatY && boatY <= posY + dim.getHeight()){
-				imageGraphics.drawImage(boat, boatX-posX, boatY-posY, null);
+			if(tileCliqued){
+				if(posX <= boatXCliqued && boatXCliqued <= posX + dim.getWidth() && posY <= boatYCliqued && boatYCliqued <= posY + dim.getHeight()){
+					System.out.println("cliqued : " + boatXCliqued + ";" + boatYCliqued);
+					System.out.println("destination : " + destination.getPixelX() + ";" + destination.getPixelY());
+					
+					imageGraphics.drawImage(boat, destination.getPixelX()-posX-boat.getWidth(null)/2, destination.getPixelY()-posY-boat.getHeight(null), null);
+				}
 			}
-			
 			g2.drawImage(image, 0, 0, null);
 		}
 	}
 	
+	public Cell getBoatCoordinates(){
+		Area area = modelObjects.getFullMap().getAreaMatchingClick(boatXCliqued, boatYCliqued, posX, posY);
+		return area.getCellMatchingClick(boatXCliqued, boatYCliqued, posX, posY);
+	}
 	
 	public void display(){
 		Area[][] map = modelObjects.getFullMap().getAreas();
@@ -222,6 +235,9 @@ public class MainFrame extends JFrame implements Observer{
 		int tile_width_mult_area_offset = tile_width * areaOffset;
 		int tile_height_mult_area_offset = tile_height * areaOffset;
 		
+		Integer widthTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("widthTexture"));
+		Integer heightTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("heightTexture"));
+		
 		for(int i = 0; i < map.length; i++){
 			for(int j = 0; j < map[0].length; j++){
 				Cell[][] area = map[i][j].getCells();
@@ -236,7 +252,7 @@ public class MainFrame extends JFrame implements Observer{
 								+ (i * tile_height_mult_area_offset) - (j * tile_height_mult_area_offset) 
 								+ offset_Y;
 
-						setPixelsPositions(area[k][l], x, y);
+						setPixelsPositions(area[k][l], x, y, widthTexture, heightTexture);
 						
 						if(area[k][l].getFieldType() == FieldType.ILE){
 							offgc.drawImage(earthTexture, x, y, null);
@@ -250,10 +266,7 @@ public class MainFrame extends JFrame implements Observer{
 		}		
 	}
 
-	private void setPixelsPositions(Cell cell, int x, int y) {
-		Integer widthTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("widthTexture"));
-		Integer heightTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("heightTexture"));
-		
+	private void setPixelsPositions(Cell cell, int x, int y, int widthTexture, int heightTexture) {
 		cell.setPixelX(x + widthTexture/2);
 		cell.setPixelY(y + heightTexture/2);
 	}
@@ -281,22 +294,6 @@ public class MainFrame extends JFrame implements Observer{
 		this.mouseThread = mouseThread;
 	}
 
-	public int getXCliqued() {
-		return XCliqued;
-	}
-
-	public void setXCliqued(int xCliqued) {
-		XCliqued = xCliqued;
-	}
-
-	public int getYCliqued() {
-		return YCliqued;
-	}
-
-	public void setYCliqued(int yCliqued) {
-		YCliqued = yCliqued;
-	}
-
 	public int getPosX() {
 		return posX;
 	}
@@ -312,5 +309,24 @@ public class MainFrame extends JFrame implements Observer{
 	public void setPosY(int posY) {
 		this.posY = posY;
 	}
-	
+
+	public int getBoatXCliqued() {
+		return boatXCliqued;
+	}
+
+	public void setBoatXCliqued(int boatXCliqued) {
+		this.boatXCliqued = boatXCliqued;
+	}
+
+	public int getBoatYCliqued() {
+		return boatYCliqued;
+	}
+
+	public void setBoatYCliqued(int boatYCliqued) {
+		this.boatYCliqued = boatYCliqued;
+	}
+
+	public Thread getMouseMotionThread() {
+		return mouseMotionThread;
+	}
 }

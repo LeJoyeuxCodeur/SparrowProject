@@ -23,6 +23,7 @@ public class Area extends Observable implements Observer{
 	private File areaFile;
 	private Logger logger = new ProjectLogger(this.getClass()).getLogger();
 	private Map<String, Character> mapWithCharactersUsed;
+	private int pixelX, pixelY;
 	
 	private void initArea(){
 		String area = "";
@@ -112,4 +113,48 @@ public class Area extends Observable implements Observer{
 		
 		return s;
 	}
+
+	public int getPixelX() {
+		return pixelX;
+	}
+
+	public void setPixeLX(int pixelX) {
+		this.pixelX = pixelX;
+	}
+
+	public int getPixelY() {
+		return pixelY;
+	}
+
+	public void setPixelY(int pixelY) {
+		this.pixelY = pixelY;
+	}
+
+	public Cell getCellMatchingClick(int boatXCliqued, int boatYCliqued, int posX, int posY) {
+		Cell tmp = cells[0][0];
+		int diff;
+		int lastMinorDIffFound = Math.abs((boatXCliqued + posX) - cells[0][0].getPixelX());
+		int bestIFound = 0;
+		
+		for(int i = 0; i < cells.length; i++){
+			diff = Math.abs((boatXCliqued + posX) - cells[i][i].getPixelX());
+		
+			if(diff < lastMinorDIffFound){
+				lastMinorDIffFound = diff;
+				bestIFound = i;
+			}
+		}
+		
+		//TODO
+		/*
+		for(int j = cells.length - bestIFound; j < cells[0].length; j++){
+			diff = Math.abs(boatYCliqued - cells[bestIFound][j].getPixelY() - posY);
+				
+			if(diff < lastMinorDIffFound){
+				lastMinorDIffFound = diff;
+				tmp = cells[bestIFound][j];
+			}
+		}*/
+		return tmp;
+	}	
 }

@@ -72,8 +72,11 @@ public class MainFrame extends JFrame implements Observer{
 	/**
 	 * Position in y when we click
 	 */
-	private int boatYCliqued = 1470;
+	private int boatYCliqued = 0;
 	public static boolean tileCliqued = false;
+	private int widthTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("widthTexture"));
+	private int heightTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("heightTexture"));
+	
 	
 	public MainFrame(ModelObjects modelObjects){
 		this.modelObjects = modelObjects;
@@ -133,9 +136,6 @@ public class MainFrame extends JFrame implements Observer{
 		Integer fieldWidth = Integer.parseInt(GameProperties.PROPERTIES.getProperty("fieldWidth"));
 		Integer fieldHeight = Integer.parseInt(GameProperties.PROPERTIES.getProperty("fieldHeight"));
 		
-		Integer widthTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("widthTexture"));
-		Integer heightTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("heightTexture"));
-		
 		BUFFERED_IMAGE_WIDTH = cellNumberOnWidth * fieldWidth * widthTexture;
 		BUFFERED_IMAGE_HEIGHT = cellNumberOnHeight * fieldHeight * heightTexture;
 		
@@ -177,9 +177,16 @@ public class MainFrame extends JFrame implements Observer{
 				posX = 0;
 		}
 		
-		else if(arg.equals("TILE_CLIQUED"))
+		// SCREEN CLIQUED
+		else if(arg.equals("TILE_CLIQUED_AND_REPAINT")){
+			tileCliqued = false;
 			destination = getBoatCoordinates();
+			
+			if(destination != null)
+				repaint();
+		}
 		
+		// REPAINT THE FRAME
 		else if(arg.equals("REPAINT"))
 			repaint();
 	}
@@ -194,49 +201,51 @@ public class MainFrame extends JFrame implements Observer{
 			
 			imageGraphics = image.getGraphics();
 			imageGraphics.drawImage(sub, 0, 0, null);
-			
-			
-			if(tileCliqued){
-				if(posX <= boatXCliqued && boatXCliqued <= posX + dim.getWidth() && posY <= boatYCliqued && boatYCliqued <= posY + dim.getHeight()){
-					System.out.println("cliqued : " + boatXCliqued + ";" + boatYCliqued);
-					System.out.println("destination : " + destination.getPixelX() + ";" + destination.getPixelY());
+
+
+			if(posX < getRealClickLocationOnX(boatXCliqued) && getRealClickLocationOnX(boatXCliqued) < posX + dim.getWidth()
+			&& posY < getRealClickLocationOnY(boatYCliqued) && getRealClickLocationOnY(boatYCliqued) < posY + dim.getHeight()){
+	
+				int drawX = destination.getMiddleX() - posX - widthTexture/2;
+				int drawY = destination.getMiddleY() - posY - heightTexture/2;
 					
-					imageGraphics.drawImage(boat, destination.getPixelX()-posX-boat.getWidth(null)/2, destination.getPixelY()-posY-boat.getHeight(null), null);
-				}
+				imageGraphics.drawImage(boat, drawX, drawY, null);
 			}
 			g2.drawImage(image, 0, 0, null);
 		}
 	}
 	
+	public int getRealClickLocationOnX(int x){
+		return x + posX;
+	}
+	
+	public int getRealClickLocationOnY(int y){
+		return y + posY;
+	}
+	
 	public Cell getBoatCoordinates(){
-		Area area = modelObjects.getFullMap().getAreaMatchingClick(boatXCliqued, boatYCliqued, posX, posY);
-		return area.getCellMatchingClick(boatXCliqued, boatYCliqued, posX, posY);
+		Area area = modelObjects.getFullMap().getAreaMatchingClick(getRealClickLocationOnX(boatXCliqued), getRealClickLocationOnY(boatYCliqued));
+		return area.getCellMatchingClick(getRealClickLocationOnX(boatXCliqued), getRealClickLocationOnY(boatYCliqued), widthTexture, heightTexture);
 	}
 	
 	public void display(){
 		Area[][] map = modelObjects.getFullMap().getAreas();
 		
-		int tile_width = Integer.parseInt(GameProperties.PROPERTIES.getProperty("widthTexture"));
-		int tile_height = Integer.parseInt(GameProperties.PROPERTIES.getProperty("heightTexture"));
-		
 		int offset_X = 0;
-		int offset_Y = ((map[0].length * map[0][0].getCells()[0].length) * tile_height/2) - tile_height/2;
+		int offset_Y = ((map[0].length * map[0][0].getCells()[0].length) * heightTexture/2) - heightTexture/2;
 		int areaOffset = Integer.parseInt(GameProperties.PROPERTIES.getProperty("cellNumberOnWidth"))/2;
 		
-		displayMap(map, tile_width, tile_height, areaOffset, offset_X, offset_Y);
+		displayMap(map, areaOffset, offset_X, offset_Y);
 	}
 
-	private void displayMap(Area[][] map, int tile_width, int tile_height, int areaOffset, int offset_X, int offset_Y) {
+	private void displayMap(Area[][] map, int areaOffset, int offset_X, int offset_Y) {
 		Graphics offgc = offScreen.getGraphics();
 
-		int mid_tile_witdh = tile_width/2;
-		int mid_tile_height = tile_height/2;
+		int mid_tile_witdh = widthTexture/2;
+		int mid_tile_height = heightTexture/2;
 		
-		int tile_width_mult_area_offset = tile_width * areaOffset;
-		int tile_height_mult_area_offset = tile_height * areaOffset;
-		
-		Integer widthTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("widthTexture"));
-		Integer heightTexture = Integer.parseInt(GameProperties.PROPERTIES.getProperty("heightTexture"));
+		int tile_width_mult_area_offset = widthTexture * areaOffset;
+		int tile_height_mult_area_offset = heightTexture * areaOffset;
 		
 		for(int i = 0; i < map.length; i++){
 			for(int j = 0; j < map[0].length; j++){
@@ -251,8 +260,8 @@ public class MainFrame extends JFrame implements Observer{
 						int y = (k * mid_tile_height) - (l * mid_tile_height) 
 								+ (i * tile_height_mult_area_offset) - (j * tile_height_mult_area_offset) 
 								+ offset_Y;
-
-						setPixelsPositions(area[k][l], x, y, widthTexture, heightTexture);
+						
+						area[k][l].setMiddlePositions(x, y, mid_tile_witdh, mid_tile_height);
 						
 						if(area[k][l].getFieldType() == FieldType.ILE){
 							offgc.drawImage(earthTexture, x, y, null);
@@ -261,14 +270,9 @@ public class MainFrame extends JFrame implements Observer{
 							offgc.drawImage(seaTexture, x, y, null);
 						}
 					}
-				}				
+				}			
 			}
 		}		
-	}
-
-	private void setPixelsPositions(Cell cell, int x, int y, int widthTexture, int heightTexture) {
-		cell.setPixelX(x + widthTexture/2);
-		cell.setPixelY(y + heightTexture/2);
 	}
 
 	public int getMouseDetectionOffset() {

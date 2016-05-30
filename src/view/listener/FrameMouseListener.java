@@ -18,7 +18,6 @@ public class FrameMouseListener implements MouseListener, MouseMotionListener{
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		
 		MainFrame.lastXFound = arg0.getX();
 		MainFrame.lastYFound = arg0.getY();
 		
@@ -27,8 +26,8 @@ public class FrameMouseListener implements MouseListener, MouseMotionListener{
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		frame.setBoatXCliqued(arg0.getX() + frame.getPosX());
-		frame.setBoatYCliqued(arg0.getY() + frame.getPosY());
+		frame.setBoatXCliqued(arg0.getX());
+		frame.setBoatYCliqued(arg0.getY());
 		MainFrame.tileCliqued = true;
 		
 		frame.getMouseThread().resume();

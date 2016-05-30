@@ -69,7 +69,7 @@ public class FullMap extends Observable implements Observer{
 		notifyObservers(arg);
 	}
 
-	public Area getAreaMatchingClick(int boatXCliqued, int boatYCliqued, int posX, int posY) {
+	public Area getAreaMatchingClick(int realLocX, int realLocY){
 		return areas[0][0];
 		
 		//TODO

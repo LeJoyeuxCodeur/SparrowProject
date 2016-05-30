@@ -9,9 +9,7 @@ import java.util.Observable;
  */
 public class Cell extends Observable{
 	private FieldType fieldType;
-	private int pixelX;
-	private int pixelY;
-	
+	private int middleX, middleY;
 	
 	private String ileType = PROPERTIES.getProperty("ileType");
 	private String seaType = PROPERTIES.getProperty("seaType");
@@ -29,20 +27,24 @@ public class Cell extends Observable{
 			return ileType + "  ";
 		return seaType + "  ";
 	}
-
-	public int getPixelX() {
-		return pixelX;
+	public int getMiddleX() {
+		return middleX;
 	}
 
-	public void setPixelX(int pixelX) {
-		this.pixelX = pixelX;
+	public void setMiddleX(int middleX) {
+		this.middleX = middleX;
 	}
 
-	public int getPixelY() {
-		return pixelY;
+	public int getMiddleY() {
+		return middleY;
 	}
 
-	public void setPixelY(int pixelY) {
-		this.pixelY = pixelY;
+	public void setMiddleY(int middleY) {
+		this.middleY = middleY;
+	}
+
+	public void setMiddlePositions(int x, int y, int midWidthTexture, int midHeightTexture) {
+		setMiddleX(x + midWidthTexture);
+		setMiddleY(y + midHeightTexture);
 	}
 }

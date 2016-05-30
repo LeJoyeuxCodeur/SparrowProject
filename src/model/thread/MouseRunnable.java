@@ -15,11 +15,8 @@ public class MouseRunnable extends Observable implements Runnable{
 		logger.info("Mouse thread started");
 		
 		while(true){
-			if(MainFrame.tileCliqued){
-				setChanged("TILE_CLIQUED");
-				setChanged("REPAINT");
-				MainFrame.tileCliqued = false;
-			}
+			if(MainFrame.tileCliqued)
+				setChanged("TILE_CLIQUED_AND_REPAINT");
 			Thread.currentThread().suspend();
 		}
 	}

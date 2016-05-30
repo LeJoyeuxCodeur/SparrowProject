@@ -23,7 +23,7 @@ public class Area extends Observable implements Observer{
 	private File areaFile;
 	private Logger logger = new ProjectLogger(this.getClass()).getLogger();
 	private Map<String, Character> mapWithCharactersUsed;
-	private int pixelX, pixelY;
+	private int middleX, middleY;
 	
 	private void initArea(){
 		String area = "";
@@ -114,47 +114,35 @@ public class Area extends Observable implements Observer{
 		return s;
 	}
 
-	public int getPixelX() {
-		return pixelX;
+	public int getMiddleX() {
+		return middleX;
 	}
 
-	public void setPixeLX(int pixelX) {
-		this.pixelX = pixelX;
+	public void setMiddleX(int middleX) {
+		this.middleX = middleX;
 	}
 
-	public int getPixelY() {
-		return pixelY;
+	public int getMiddleY() {
+		return middleY;
 	}
 
-	public void setPixelY(int pixelY) {
-		this.pixelY = pixelY;
+	public void setMiddleY(int middleY) {
+		this.middleY = middleY;
 	}
 
-	public Cell getCellMatchingClick(int boatXCliqued, int boatYCliqued, int posX, int posY) {
-		Cell tmp = cells[0][0];
-		int diff;
-		int lastMinorDIffFound = Math.abs((boatXCliqued + posX) - cells[0][0].getPixelX());
-		int bestIFound = 0;
+	public Cell getCellMatchingClick(int realLocX, int realLocY, int widthTexture, int heightTexture) {
+		int drawCellX, drawCellY;
 		
 		for(int i = 0; i < cells.length; i++){
-			diff = Math.abs((boatXCliqued + posX) - cells[i][i].getPixelX());
-		
-			if(diff < lastMinorDIffFound){
-				lastMinorDIffFound = diff;
-				bestIFound = i;
+			for(int j = 0; j < cells[0].length; j++){
+				drawCellX = cells[i][j].getMiddleX() - widthTexture/2;
+				drawCellY = cells[i][j].getMiddleY() - heightTexture/2;
+				
+				if(drawCellX < realLocX && realLocX < (drawCellX + widthTexture) 
+						&& drawCellY < realLocY && realLocY < (drawCellY + heightTexture))
+					return cells[i][j];
 			}
 		}
-		
-		//TODO
-		/*
-		for(int j = cells.length - bestIFound; j < cells[0].length; j++){
-			diff = Math.abs(boatYCliqued - cells[bestIFound][j].getPixelY() - posY);
-				
-			if(diff < lastMinorDIffFound){
-				lastMinorDIffFound = diff;
-				tmp = cells[bestIFound][j];
-			}
-		}*/
-		return tmp;
+		return null;
 	}	
 }

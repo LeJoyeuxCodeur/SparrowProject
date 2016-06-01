@@ -4,6 +4,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import model.field.FullMap;
+import model.player.Boat;
 
 public class ModelObjects extends Observable implements Observer {
 	private FullMap fullMap;

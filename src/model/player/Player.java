@@ -1,7 +1,5 @@
 package model.player;
 
-import model.Boat;
-
 /**
  * This class represents a player, it can be a human player or a non playing player
  */
